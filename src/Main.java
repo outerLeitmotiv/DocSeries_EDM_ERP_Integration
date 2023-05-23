@@ -14,5 +14,6 @@ public class Main {
         ApiCalls api = new ApiCalls();
         String token = (api.getToken());
         api.getContentTypeList(token);
+        api.getInvoice(token);
     }
 }

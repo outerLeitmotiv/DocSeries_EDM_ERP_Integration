@@ -1,4 +1,6 @@
 import ch.hearc.ged.JSONUtilities;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -41,21 +43,48 @@ public class ApiCalls {
     }
 
     public String getContentTypeList(String token) throws JSONException {
+        ArrayList<JSONObject> contentTypeList = new ArrayList<>();
         String response = null;
         HttpURLConnection contentType = null;
         try {
-        contentType = JSONUtilities.write(url+"api/content-type/list", GET, null, token);
-    } catch (Exception e) {
-        throw new RuntimeException(e);
+            contentType = JSONUtilities.write(url + "api/content-type/list", GET, null, token);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            response = JSONUtilities.read(contentType);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        JSONArray jsonArray = new JSONArray(response);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObj = jsonArray.getJSONObject(i);
+            contentTypeList.add(jsonObj);
+        }
+            return contentTypeList.get(0).getString("id");
     }
-       try {
-        response = JSONUtilities.read(contentType);
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
 
+    public Invoices getInvoice(String token) {
+        Invoices invoice = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            HttpURLConnection connection = JSONUtilities.write(url + "api/search/fulltext", POST, "{ " +
+                    " \"searchPattern\" : \"facture\", " +
+                    " \"contentTypeIDs\" : \"18\"" +
+                    " }", token);
+            String response = JSONUtilities.read(connection);
 
+            JSONArray jsonArray = new JSONArray(response);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObj = jsonArray.getJSONObject(i);
+                invoice = mapper.readValue(jsonObj.toString(), Invoices.class);
 
-    return response;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return invoice;
     }
 }
