@@ -15,5 +15,6 @@ public class Main {
         String token = (api.getToken());
         api.getContentTypeList(token);
         api.getInvoice(token);
+        api.updateStatus(token, 279);
     }
 }

@@ -10,6 +10,14 @@ import java.util.Map;
 public class Invoices {
 
     //simple list of maps, a map consists of a POJO as key and a binary as value
-    private List<Map<Object, FileObject>> invoiceList;
+    private List<Map<String, Object>> invoiceList;
+
+    public List<Map<String, Object>> getInvoiceList() {
+        return invoiceList;
+    }
+
+    public void setInvoiceList(List<Map<String, Object>> invoiceList) {
+        this.invoiceList = invoiceList;
+    }
 
 }
